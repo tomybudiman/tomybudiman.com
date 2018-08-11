@@ -7,10 +7,13 @@ const empty = require("empty-folder");
 const path = require("path");
 const fs = require("fs");
 
+const appDirectory = fs.realpathSync(process.cwd());
+const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
+
 // Check if build folder is exists
-if(fs.existsSync('./build')){
+if(fs.existsSync(resolveApp("build"))){
   // Purge build folder content if it exists
-  empty('./build', false, e => {
+  empty(resolveApp("build"), false, e => {
     if(e.error){
       throw e.error
     }
@@ -19,21 +22,23 @@ if(fs.existsSync('./build')){
 
 module.exports = (env, argv) => {
   return({
+    entry: {
+      index: resolveApp('src')
+    },
     output: {
-      path: path.resolve(__dirname,'build'),
-      chunkFilename: 'static/js/[id][hash:32].js',
-      filename: 'static/js/bundle.js',
-      publicPath: '/'
+      path: resolveApp('build'),
+      chunkFilename: 'static/js/[id]-[hash:32].js',
+      filename: 'static/js/bundle.js'
     },
     devServer: {
-      open: true
+      open: false
     },
     module: {
       rules: [
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
-          include: path.resolve(__dirname,'src'),
+          include: resolveApp("src"),
           use: {
             loader: "babel-loader"
           }
@@ -113,7 +118,7 @@ module.exports = (env, argv) => {
     plugins: [
       new HtmlWebPackPlugin({
         inject: true,
-        template: "./public/index.html",
+        template: resolveApp('./public/index.html'),
         minify: {
           removeComments: true,
           collapseWhitespace: true,

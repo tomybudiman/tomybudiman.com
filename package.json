@@ -4,8 +4,8 @@
   "description": "React App setup with Webpack 4",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --config webpack.config.js",
-    "build": "webpack --mode production"
+    "start": "webpack-dev-server --mode development --config config/webpack.config.js",
+    "build": "webpack --mode production --config config/webpack.config.js"
   },
   "keywords": [
     "react",
